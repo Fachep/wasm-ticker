@@ -1,7 +1,9 @@
-use wasm_bindgen_test::*;
 use wasm_bindgen_test::__rt::detect::Runtime;
+use wasm_bindgen_test::*;
+use wasm_ticker::ticker::{
+    AnimationFrameTicker, ImmediateTicker, MessageChannelTicker, TimeoutTicker,
+};
 use wasm_ticker::NamedTicker;
-use wasm_ticker::ticker::{AnimationFrameTicker, ImmediateTicker, MessageChannelTicker, TimeoutTicker};
 
 //wasm_bindgen_test_configure!(run_in_browser );
 
@@ -26,7 +28,7 @@ fn check_test() {
             message_channel: true,
             timeout: true,
             immediate: true,
-            animation_frame: false
+            animation_frame: false,
         },
         Runtime::Worker => Res {
             message_channel: true,

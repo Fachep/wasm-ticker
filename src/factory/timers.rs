@@ -1,8 +1,8 @@
+use crate::{State, TickerFactory};
+use std::mem::MaybeUninit;
+use std::rc::Rc;
 use wasm_bindgen::__rt::WasmRefCell;
 use wasm_bindgen::prelude::*;
-use std::rc::Rc;
-use std::mem::MaybeUninit;
-use crate::{State, TickerFactory};
 
 macro_rules! timer_ticker_factory_impl {
     {
@@ -53,19 +53,19 @@ macro_rules! timer_ticker_factory_impl {
     };
 }
 
-timer_ticker_factory_impl!{
+timer_ticker_factory_impl! {
     Ticker = crate::ticker::ImmediateTicker,
     TickerFactory = ImmediateTickerFactory,
     Timer = crate::bindings::__wasm_ticker_binding_set_immediate,
 }
 
-timer_ticker_factory_impl!{
+timer_ticker_factory_impl! {
     Ticker = crate::ticker::TimeoutTicker,
     TickerFactory = TimeoutTickerFactory,
     Timer = crate::bindings::__wasm_ticker_binding_set_timeout,
 }
 
-timer_ticker_factory_impl!{
+timer_ticker_factory_impl! {
     Ticker = crate::ticker::AnimationFrameTicker,
     TickerFactory = AnimationFrameTickerFactory,
     Timer = crate::bindings::__wasm_ticker_binding_request_animation_frame,

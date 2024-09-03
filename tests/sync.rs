@@ -11,7 +11,7 @@ use wasm_bindgen_futures::JsFuture;
 use wasm_ticker::{NamedTicker, Ticker, TickerFactory};
 
 #[wasm_bindgen]
-extern {
+extern "C" {
     type Promise;
     #[wasm_bindgen(static_method_of = Promise)]
     fn withResolvers() -> Resolvers;
@@ -26,10 +26,7 @@ extern {
     fn reject(this: &Resolvers) -> js_sys::Function;
 
     #[wasm_bindgen(catch, js_name = "setTimeout")]
-    fn set_timeout(
-        handler: &::js_sys::Function,
-        timeout: i32,
-    ) -> Result<JsValue, JsValue>;
+    fn set_timeout(handler: &::js_sys::Function, timeout: i32) -> Result<JsValue, JsValue>;
 }
 
 struct Fut(JsFuture, Closure<dyn FnMut()>);
@@ -50,15 +47,15 @@ fn wait(timeout: i32) -> Result<Fut, JsValue> {
     });
     let fut = Fut(JsFuture::from(promise), cb);
 
-    set_timeout(
-        fut.1.as_ref().unchecked_ref(),
-        timeout
-    )?;
+    set_timeout(fut.1.as_ref().unchecked_ref(), timeout)?;
 
     Ok(fut)
 }
 
-async fn sync_test_impl<F: TickerFactory<Output: NamedTicker>>(interval: i32, times: u32) -> Result<u64, JsValue> {
+async fn sync_test_impl<F: TickerFactory<Output: NamedTicker>>(
+    interval: i32,
+    times: u32,
+) -> Result<u64, JsValue> {
     if !F::Output::check() {
         return Ok(0);
     }
@@ -79,9 +76,11 @@ async fn sync_test_impl<F: TickerFactory<Output: NamedTicker>>(interval: i32, ti
         let n = n.get();
         let m = m.get();
         assert_eq!(
-            n, m,
+            n,
+            m,
             "Assertion failed for n({}) == m({}), at {:?}",
-            n, m,
+            n,
+            m,
             Duration::from_millis(interval as u64) * i
         );
     }
@@ -93,8 +92,8 @@ async fn sync_test_impl<F: TickerFactory<Output: NamedTicker>>(interval: i32, ti
 use wasm_bindgen_test::*;
 use wasm_ticker::factory::*;
 
-wasm_bindgen_test_configure!(run_in_node_experimental );
-wasm_bindgen_test_configure!(run_in_browser );
+wasm_bindgen_test_configure!(run_in_node_experimental);
+wasm_bindgen_test_configure!(run_in_browser);
 
 #[wasm_bindgen_test]
 async fn sync_test() -> Result<(), JsValue> {

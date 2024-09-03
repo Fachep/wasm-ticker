@@ -2,10 +2,10 @@
 
 mod bindings;
 
-/// Types implement [Ticker]
-pub mod ticker;
 /// Factory types implement [TickerFactory]
 pub mod factory;
+/// Types implement [Ticker]
+pub mod ticker;
 
 use wasm_bindgen::JsValue;
 
@@ -44,15 +44,20 @@ pub trait Ticker {
     fn stop(&self);
 
     /// Simply queue task once.
-    fn spawn(task: impl FnOnce() + 'static) -> Result<(), JsValue> where Self: Sized;
+    fn spawn(task: impl FnOnce() + 'static) -> Result<(), JsValue>
+    where
+        Self: Sized;
 
     /// Queue task once and wrap return value by [Promise](js_sys::Promise).
     ///
     /// Requires [`Promise.withResolvers`][withResolvers] method.
     ///
     /// [withResolvers]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
-    fn spawn_promise(task: impl FnOnce() -> Result<JsValue, JsValue> + 'static)
-                     -> Result<js_sys::Promise, JsValue> where Self: Sized
+    fn spawn_promise(
+        task: impl FnOnce() -> Result<JsValue, JsValue> + 'static,
+    ) -> Result<js_sys::Promise, JsValue>
+    where
+        Self: Sized,
     {
         let resolvers = bindings::__wasm_ticker_binding_promise_resolvers()?;
         let promise = resolvers.__wasm_ticker_binding_promise();
@@ -62,7 +67,8 @@ pub trait Ticker {
             match task() {
                 Ok(r) => resolve.call1(&JsValue::null(), &r),
                 Err(e) => reject.call1(&JsValue::null(), &e),
-            }.unwrap();
+            }
+            .unwrap();
         })?;
         Ok(promise)
     }

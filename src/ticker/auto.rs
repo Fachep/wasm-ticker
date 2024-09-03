@@ -1,6 +1,6 @@
-use wasm_bindgen::prelude::*;
-use crate::{Ticker, State};
 use super::{message_channel::MessageChannelTicker, timers::*};
+use crate::{State, Ticker};
+use wasm_bindgen::prelude::*;
 
 /// Constructed by [AutoTickerFactory](crate::factory::AutoTickerFactory).
 ///

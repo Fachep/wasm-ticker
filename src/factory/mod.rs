@@ -14,4 +14,4 @@ pub use timers::TimeoutTickerFactory;
 /// Factory type for [ImmediateTicker](crate::ticker::ImmediateTicker).
 pub use timers::ImmediateTickerFactory;
 
-pub(crate) use auto::{SELECTED_TICKER, SelectedTicker};
+pub(crate) use auto::{SelectedTicker, SELECTED_TICKER};

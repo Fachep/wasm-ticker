@@ -1,8 +1,8 @@
-use wasm_bindgen::__rt::Lazy;
-use wasm_bindgen::JsValue;
-use crate::{TickerFactory, NamedTicker};
-use crate::ticker::*;
 use super::{message_channel::MessageChannelTickerFactory, timers::*};
+use crate::ticker::*;
+use crate::{NamedTicker, TickerFactory};
+use wasm_bindgen::JsValue;
+use wasm_bindgen::__rt::Lazy;
 
 pub(crate) enum SelectedTicker {
     MessageChannel,
@@ -12,7 +12,7 @@ pub(crate) enum SelectedTicker {
     None,
 }
 
-pub(crate) static SELECTED_TICKER: Lazy<SelectedTicker> = Lazy::new(||
+pub(crate) static SELECTED_TICKER: Lazy<SelectedTicker> = Lazy::new(|| {
     if MessageChannelTicker::check() {
         SelectedTicker::MessageChannel
     } else if ImmediateTicker::check() {
@@ -24,7 +24,7 @@ pub(crate) static SELECTED_TICKER: Lazy<SelectedTicker> = Lazy::new(||
     } else {
         SelectedTicker::None
     }
-);
+});
 
 /// Automatically construct an available [Ticker](crate::Ticker)
 /// wrapped by [AutoTicker].
@@ -44,19 +44,17 @@ impl TickerFactory for AutoTickerFactory {
             SelectedTicker::None => Err(JsValue::from_str("No available implementation detected")),
             SelectedTicker::MessageChannel => Result::map(
                 MessageChannelTickerFactory::new(task),
-                AutoTicker::MessageChannel
+                AutoTicker::MessageChannel,
             ),
-            SelectedTicker::Immediate => Result::map(
-                ImmediateTickerFactory::new(task),
-                AutoTicker::Immediate
-            ),
-            SelectedTicker::Timeout => Result::map(
-                TimeoutTickerFactory::new(task),
-                AutoTicker::Timeout
-            ),
+            SelectedTicker::Immediate => {
+                Result::map(ImmediateTickerFactory::new(task), AutoTicker::Immediate)
+            }
+            SelectedTicker::Timeout => {
+                Result::map(TimeoutTickerFactory::new(task), AutoTicker::Timeout)
+            }
             SelectedTicker::AnimationFrame => Result::map(
                 AnimationFrameTickerFactory::new(task),
-                AutoTicker::AnimationFrame
+                AutoTicker::AnimationFrame,
             ),
         }
     }

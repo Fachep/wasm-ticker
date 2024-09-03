@@ -1,7 +1,7 @@
+use crate::{NamedTicker, State, Ticker, TimerTicker};
 use std::rc::Rc;
 use wasm_bindgen::__rt::WasmRefCell;
 use wasm_bindgen::prelude::*;
-use crate::{Ticker, NamedTicker, TimerTicker, State};
 
 macro_rules! timer_ticker_impl {
     {
@@ -103,14 +103,13 @@ macro_rules! timer_ticker_impl {
     };
 }
 
-
 use crate::bindings::{
     __wasm_ticker_binding_clear_timeout as clearTimeout,
     __wasm_ticker_binding_set_timeout as setTimeout,
     has_set_timeout,
     TimeoutToken
 };
-timer_ticker_impl!{
+timer_ticker_impl! {
     #[doc = "Constructed by [TimeoutTickerFactory](crate::factory::TimeoutTickerFactory)."]
     Ticker = TimeoutTicker,
     Token = TimeoutToken,
@@ -125,7 +124,7 @@ use crate::bindings::{
     has_set_immediate,
     ImmediateToken
 };
-timer_ticker_impl!{
+timer_ticker_impl! {
     #[doc = "Constructed by [ImmediateTickerFactory](crate::factory::ImmediateTickerFactory).\
     Available in NodeJs."]
     Ticker = ImmediateTicker,
@@ -141,7 +140,7 @@ use crate::bindings::{
     has_request_animation_frame,
     AnimationFrameToken
 };
-timer_ticker_impl!{
+timer_ticker_impl! {
     #[doc = "Constructed by [AnimationFrameTickerFactory](crate::factory::AnimationFrameTickerFactory).\
     Available in browser Window context."]
     Ticker = AnimationFrameTicker,

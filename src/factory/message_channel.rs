@@ -1,9 +1,9 @@
+use crate::ticker::MessageChannelTicker;
+use crate::{State, TickerFactory};
 use std::rc::Rc;
 use wasm_bindgen::__rt::WasmRefCell;
 use wasm_bindgen::prelude::*;
 use web_sys::MessageChannel;
-use crate::ticker::MessageChannelTicker;
-use crate::{TickerFactory, State};
 
 /// Factory type for [MessageChannelTicker].
 #[derive(Clone, Copy)]

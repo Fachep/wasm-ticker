@@ -1,8 +1,8 @@
+use crate::{NamedTicker, State, Ticker};
 use std::rc::Rc;
 use wasm_bindgen::__rt::WasmRefCell;
 use wasm_bindgen::prelude::*;
 use web_sys::{MessageChannel, MessagePort};
-use crate::{Ticker, NamedTicker, State};
 
 /// Constructed by [MessageChannelTickerFactory](crate::factory::MessageChannelTickerFactory).
 ///
@@ -45,12 +45,10 @@ impl Ticker for MessageChannelTicker {
             State::Error(ref e) => return Err(e.clone()),
         };
         *self.state.borrow_mut() = State::Started;
-        self.port2
-            .post_message(&JsValue::null())
-            .map_err(|e| {
-                *self.state.borrow_mut() = State::Error(e.clone());
-                e
-            })
+        self.port2.post_message(&JsValue::null()).map_err(|e| {
+            *self.state.borrow_mut() = State::Error(e.clone());
+            e
+        })
     }
 
     fn start_immediate(&self) -> Result<(), JsValue> {
@@ -60,11 +58,12 @@ impl Ticker for MessageChannelTicker {
             State::Error(ref e) => return Err(e.clone()),
         };
         *self.state.borrow_mut() = State::Started;
-        self.port1.onmessage().as_ref().unwrap()
+        self.port1
+            .onmessage()
+            .as_ref()
+            .unwrap()
             .call0(&JsValue::null())
-            .map_err(|e| {
-                e
-            })
+            .map_err(|e| e)
             .map(|_| ())
     }
 
@@ -88,8 +87,6 @@ impl Ticker for MessageChannelTicker {
 impl NamedTicker for MessageChannelTicker {
     fn check() -> bool {
         static mut RET: Option<bool> = None;
-        unsafe {
-            *RET.get_or_insert_with(|| { MessageChannel::new().is_ok() })
-        }
+        unsafe { *RET.get_or_insert_with(|| MessageChannel::new().is_ok()) }
     }
 }
