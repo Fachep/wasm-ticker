@@ -30,19 +30,19 @@ See also https://developer.mozilla.org/docs/Web/API/HTML_DOM_API/Microtask_guide
 
 ### Speed Tests:
 ```shell
-wasm-pack test --node --release --test speed_test
+wasm-pack test --node --release --test speed
 # MessageChannelTicker: 10726000/10s, interval: 932ns
 # ImmediateTicker: 9051901/10s, interval: 1.104µs
 # TimeoutTicker: 664/10s, interval: 15.06024ms
 # AutoTicker: 9879000/10s, interval: 1.012µs
 
-wasm-pack test --chrome --release # with devtools closed
+wasm-pack test --chrome --release --test speed # with devtools closed
 # MessageChannelTicker: 2359423/10s, interval: 4.238µs
 # TimeoutTicker: 2140/10s, interval: 4.672897ms
 # AnimationFrameTicker: 1438/10s, interval: 6.954102ms
 # AutoTicker: 2405336/10s, interval: 4.157µs
 
-wasm-pack test --chrome --release # with devtools opened
+wasm-pack test --chrome --release --test speed # with devtools opened
 # MessageChannelTicker: 847715/10s, interval: 11.796µs
 # TimeoutTicker: 2134/10s, interval: 4.686035ms
 # AnimationFrameTicker: 1441/10s, interval: 6.939625ms

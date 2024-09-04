@@ -1,4 +1,32 @@
-#![cfg(target_family = "wasm")]
+//! Non-block tick executor for WebAssembly Rust.
+//!
+//! Ticker callbacks queue as [Tasks] to JavaScript event loop.
+//! Instead of Microtasks or just stacking in,
+//! [Tasks] won't block current host context and UI rendering thread.
+//! See also <https://developer.mozilla.org/docs/Web/API/HTML_DOM_API/Microtask_guide/in_depth>
+//!
+//! [Tasks]: https://developer.mozilla.org/docs/Web/API/HTML_DOM_API/Microtask_guide
+//!
+//! |         Ticker         |           API           | Platform |      Interval<br/>Browser / Node      |
+//! |:----------------------:|:-----------------------:|:--------:|:-------------------------------------:|
+//! | [MessageChannelTicker] |   [Channel Messaging]   |    *     |             \>4µs / \<1µs             |
+//! |    [ImmediateTicker]   |     [setImmediate]      |   Node   |                 \~1µs                 |
+//! |    [TimeoutTicker]     |      [setTimeout]       |    *     | [\~4ms][setTimeout interval] / \~14ms |
+//! | [AnimationFrameTicker] | [requestAnimationFrame] | Browser  |          According to device          |
+//! |      [AutoTicker]      |      One of above       |    *     |                  N/A                  |
+//!
+//! [MessageChannelTicker]: ticker::MessageChannelTicker
+//! [ImmediateTicker]: ticker::ImmediateTicker
+//! [TimeoutTicker]: ticker::TimeoutTicker
+//! [AnimationFrameTicker]: ticker::AnimationFrameTicker
+//! [AutoTicker]: ticker::AutoTicker
+//!
+//! [Channel Messaging]: https://developer.mozilla.org/docs/Web/API/Channel_Messaging_API
+//! [setTimeout]: https://developer.mozilla.org/docs/Web/API/setTimeout
+//! [requestAnimationFrame]: https://developer.mozilla.org/docs/Web/API/Window/requestAnimationFrame
+//! [setImmediate]: https://nodejs.org/en-us/learn/asynchronous-work/understanding-setimmediate
+//!
+//! [setTimeout interval]: https://developer.mozilla.org/docs/Web/API/setTimeout#reasons_for_delays_longer_than_specified
 
 mod bindings;
 
