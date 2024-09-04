@@ -22,3 +22,7 @@ web-sys = { version = "0.3", features = ["MessageChannel", "MessagePort"] }
 wasm-bindgen-test = "0.3"
 web-sys = { version = "0.3", features = ["Window"] }
 wasm-bindgen-futures = "0.4"
+
+[package.metadata.docs.rs]
+default-target = "wasm32-unknwon-unknown"
+targets = ["wasm32-unknwon-unknown"]
